@@ -399,6 +399,17 @@ app.get('/api/admin/security-info', (req: Request, res: Response) => {
   });
 });
 
+// POST /api/admin/unlock: Clear IP lockout so admin can immediately retry or test
+app.post('/api/admin/unlock', (req: Request, res: Response) => {
+  const clientIp = getClientIp(req);
+  loginAttempts.delete(clientIp);
+  recordSecurityAudit('MANUAL_UNLOCK', clientIp, 'IP lockout manually cleared via admin console.', 'info');
+  return res.json({
+    success: true,
+    message: 'Rate limiting and lockout cleared successfully for current IP.',
+  });
+});
+
 // POST /api/admin/login: Authenticate administrator with anti-brute force delay & lockout
 app.post('/api/admin/login', async (req: Request, res: Response) => {
   const { password } = req.body;
