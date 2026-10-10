@@ -25,9 +25,10 @@ import ResourceViewerModal from '../components/ResourceViewerModal';
 import CourseDetailModal from '../components/CourseDetailModal';
 import CohortTimetableModal from '../components/CohortTimetableModal';
 import QuickPrintModal from '../components/QuickPrintModal';
-import { Course, Notice, Assignment, CategoryFilter } from '../types';
+import { Course, Notice, Assignment, CategoryFilter, TimetableConfig } from '../types';
 import { safeFetchJson } from '../utils/api';
 import { SEED_COURSES, DEFAULT_NOTICES } from '../data/seedCourses';
+import { loadLocalTimetable } from '../data/timetableData';
 
 export const Home: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>(() => {
@@ -67,6 +68,10 @@ export const Home: React.FC = () => {
       // ignore
     }
     return [];
+  });
+
+  const [timetableConfig, setTimetableConfig] = useState<TimetableConfig>(() => {
+    return loadLocalTimetable();
   });
 
   const [activeMainTab, setActiveMainTab] = useState<'feed' | 'assignments'>('feed');
@@ -133,10 +138,11 @@ export const Home: React.FC = () => {
     else setRefreshing(true);
 
     try {
-      const [coursesRes, noticesRes, assignmentsRes] = await Promise.all([
+      const [coursesRes, noticesRes, assignmentsRes, timetableRes] = await Promise.all([
         safeFetchJson<{ success: boolean; courses: Course[] }>('/api/courses'),
         safeFetchJson<{ success: boolean; notices: Notice[] }>('/api/notices'),
         safeFetchJson<{ success: boolean; assignments: Assignment[] }>('/api/assignments'),
+        safeFetchJson<{ success: boolean; timetable: TimetableConfig }>('/api/timetable'),
       ]);
 
       if (coursesRes.ok && coursesRes.data?.courses && coursesRes.data.courses.length > 0) {
@@ -163,6 +169,14 @@ export const Home: React.FC = () => {
           // ignore
         }
       }
+      if (timetableRes.ok && timetableRes.data?.timetable) {
+        setTimetableConfig(timetableRes.data.timetable);
+        try {
+          localStorage.setItem('cse_sem1_timetable_config', JSON.stringify(timetableRes.data.timetable));
+        } catch {
+          // ignore
+        }
+      }
     } catch (err) {
       console.warn('API sync deferred; using local offline cohort cache.', err);
     } finally {
@@ -178,7 +192,7 @@ export const Home: React.FC = () => {
     // Live continuous sync: all viewers get real-time updates when admin adds or updates data
     const pollInterval = setInterval(() => {
       loadData(true);
-    }, 4000);
+    }, 3000);
 
     const handleFocus = () => loadData(true);
     const handleVisibility = () => {
@@ -454,6 +468,7 @@ export const Home: React.FC = () => {
         isOpen={isTimetableOpen}
         onClose={() => setIsTimetableOpen(false)}
         onSelectCourse={(code) => setSelectedCourseCode(code)}
+        initialTimetable={timetableConfig}
       />
 
       {/* Course Unit-by-Unit Syllabus Detail Modal */}

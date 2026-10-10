@@ -49,30 +49,29 @@ export const UrgentBanner: React.FC<UrgentBannerProps> = ({
   const [threatNotice, setThreatNotice] = useState<Notice | null>(null);
   const [countdown, setCountdown] = useState<TimeRemaining | null>(null);
 
-  // Scan active deadlines and automatically select the closest upcoming uncompleted event
+  // Scan active deadlines and automatically select the closest upcoming event so all viewers see the same threat
   useEffect(() => {
     const now = Date.now();
-    const activeWithDeadlines = notices
-      .filter((n) => {
-        if (!n.deadline) return false;
-        const time = new Date(n.deadline).getTime();
-        // Ignore ghosted (completed by this student) items unless all are done
-        const isDone = Boolean(completedMap[n.id || (n as any)._id]);
-        return time > now && !isDone;
-      })
+    if (!notices || notices.length === 0) {
+      setThreatNotice(null);
+      return;
+    }
+
+    const futureDeadlines = notices
+      .filter((n) => n.deadline && new Date(n.deadline).getTime() > now)
       .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime());
 
-    // Fallback: If all uncompleted future deadlines are cleared, check any future deadline
-    if (activeWithDeadlines.length > 0) {
-      setThreatNotice(activeWithDeadlines[0]);
+    if (futureDeadlines.length > 0) {
+      setThreatNotice(futureDeadlines[0]);
     } else {
-      const anyFuture = notices
-        .filter((n) => n.deadline && new Date(n.deadline).getTime() > now)
-        .sort((a, b) => new Date(a.deadline!).getTime() - new Date(b.deadline!).getTime());
-
-      setThreatNotice(anyFuture.length > 0 ? anyFuture[0] : null);
+      const urgentItems = notices.filter((n) => n.isUrgent);
+      if (urgentItems.length > 0) {
+        setThreatNotice(urgentItems[0]);
+      } else {
+        setThreatNotice(notices[0] || null);
+      }
     }
-  }, [notices, completedMap]);
+  }, [notices]);
 
   // Live timer tick every 1000ms
   useEffect(() => {

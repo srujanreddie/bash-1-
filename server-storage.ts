@@ -233,12 +233,12 @@ export function initPersistentStorage(
   let assignments: AssignmentItem[] = [];
   let courses: any[] = initialCourses;
 
-  // 1. Notices Storage: If empty or missing, populate with Section B seed notices
+  // 1. Notices Storage: If file exists with array, respect it (including empty array); otherwise seed defaults
   try {
     if (fs.existsSync(NOTICES_FILE)) {
       const content = fs.readFileSync(NOTICES_FILE, 'utf-8');
       const parsed = JSON.parse(content);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         notices = parsed;
       } else {
         notices = JSON.parse(JSON.stringify(INITIAL_SEED_NOTICES));
@@ -275,7 +275,7 @@ export function initPersistentStorage(
     if (fs.existsSync(ASSIGNMENTS_FILE)) {
       const content = fs.readFileSync(ASSIGNMENTS_FILE, 'utf-8');
       const parsed = JSON.parse(content);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         assignments = parsed;
       } else {
         assignments = JSON.parse(JSON.stringify(SEED_ASSIGNMENTS));

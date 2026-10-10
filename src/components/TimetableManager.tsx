@@ -231,9 +231,6 @@ export const TimetableManager: React.FC<TimetableManagerProps> = ({
     setSaving(true);
     setStatusMsg(null);
 
-    // Save locally
-    saveLocalTimetable(config);
-
     try {
       if (!token) {
         throw new Error('Admin session missing. Please log in again.');
@@ -249,15 +246,16 @@ export const TimetableManager: React.FC<TimetableManagerProps> = ({
       });
 
       if (!res.ok || !res.data?.success) {
-        throw new Error(res.data?.message || res.message || 'Server rejected timetable update.');
+        throw new Error(res.data?.message || res.message || 'Server rejected timetable update. Please check login session.');
       }
 
-      setStatusMsg({ text: 'Timetable broadcasted live to all students!', type: 'success' });
+      saveLocalTimetable(config);
+      setStatusMsg({ text: 'Timetable updated on server and broadcasted live to all students!', type: 'success' });
       setHasUnsavedChanges(false);
-      onNotification?.('Timetable updated and synchronized live to all students!', 'success');
+      onNotification?.('Timetable updated on server and synchronized live to all students!', 'success');
     } catch (err: any) {
-      setStatusMsg({ text: `Failed to broadcast: ${err.message}`, type: 'error' });
-      onNotification?.(`Failed to update timetable on server: ${err.message}`, 'error');
+      setStatusMsg({ text: err.message || 'Failed to broadcast timetable to server.', type: 'error' });
+      onNotification?.(err.message || 'Failed to broadcast timetable to server.', 'error');
     } finally {
       setSaving(false);
     }

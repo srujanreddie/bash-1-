@@ -116,21 +116,21 @@ export const AssignmentManager: React.FC<AssignmentManagerProps> = ({
       });
 
       if (res.ok && res.data?.success) {
-        onShowMessage(res.data.message || (editingId ? 'Assignment updated!' : 'Assignment broadcasted!'));
+        onShowMessage(res.data.message || (editingId ? 'Assignment updated on server and broadcasted!' : 'Assignment broadcasted live to all viewers!'));
         resetForm();
         onRefresh();
       } else {
-        onShowError(res.data?.message || 'Failed to save assignment');
+        onShowError(res.data?.message || res.message || 'Server rejected assignment broadcast. Please verify credentials.');
       }
     } catch (err: any) {
-      onShowError(err.message || 'Error communicating with server');
+      onShowError(err.message || 'Failed to save assignment on server.');
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string, itemTitle: string) => {
-    if (!window.confirm(`Are you sure you want to delete assignment "${itemTitle}"?`)) {
+    if (!window.confirm(`Are you sure you want to delete assignment "${itemTitle}"? This will remove it for all viewers.`)) {
       return;
     }
 
@@ -143,15 +143,15 @@ export const AssignmentManager: React.FC<AssignmentManagerProps> = ({
         },
       });
 
-      if (res.ok && res.data?.success) {
-        onShowMessage(res.data.message || 'Assignment removed successfully.');
-        if (editingId === id) resetForm();
-        onRefresh();
-      } else {
-        onShowError(res.data?.message || 'Failed to delete assignment');
+      if (!res.ok || !res.data?.success) {
+        throw new Error(res.data?.message || res.message || 'Server failed to delete assignment.');
       }
+
+      onShowMessage('Assignment deleted from server and removed for all viewers.');
+      if (editingId === id) resetForm();
+      onRefresh();
     } catch (err: any) {
-      onShowError(err.message || 'Error deleting assignment');
+      onShowError(err.message || 'Failed to delete assignment on server.');
     } finally {
       setDeletingId(null);
     }

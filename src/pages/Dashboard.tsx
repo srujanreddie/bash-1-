@@ -414,10 +414,10 @@ export const Dashboard: React.FC = () => {
       });
 
       if (!res.ok || !res.data?.success || !res.data?.notice) {
-        throw new Error(res.data?.message || res.message || 'Server rejected notice update. Please ensure you are logged in as admin.');
+        throw new Error(res.data?.message || res.message || 'Server rejected notice broadcast. Please verify session.');
       }
 
-      const finalNotice: Notice = res.data.notice;
+      const finalNotice = res.data.notice;
 
       setNotices((prev) => {
         const updated = editingNoticeId
@@ -431,19 +431,20 @@ export const Dashboard: React.FC = () => {
         return updated;
       });
 
-      fetchData();
+      // Refetch from server immediately so state matches database 100%
+      await fetchData();
 
       setSuccessMsg(
         editingNoticeId
-          ? 'Notice successfully updated and broadcasted to all viewers.'
+          ? 'Notice successfully updated on server and broadcasted live to all viewers!'
           : category === 'Exam'
-          ? 'Exam date successfully scheduled and broadcasted to all viewers!'
+          ? 'Exam date successfully scheduled and synchronized to all viewers!'
           : 'New notice broadcasted live to all viewers on the public noticeboard!'
       );
       resetForm();
       setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err: any) {
-      setError(err.message || 'Failed to save notice to server');
+      setError(err.message || 'Failed to broadcast notice to server. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -461,7 +462,7 @@ export const Dashboard: React.FC = () => {
       });
 
       if (!res.ok || !res.data?.success) {
-        throw new Error(res.data?.message || res.message || 'Failed to delete notice from server.');
+        throw new Error(res.data?.message || res.message || 'Server rejected deletion.');
       }
 
       setNotices((prev) => {
@@ -474,12 +475,12 @@ export const Dashboard: React.FC = () => {
         return updated;
       });
 
-      fetchData();
+      await fetchData();
 
       setSuccessMsg('Notice deleted from server and removed for all viewers.');
       setTimeout(() => setSuccessMsg(null), 3000);
     } catch (err: any) {
-      setError(err.message || 'Failed to delete notice');
+      setError(err.message || 'Failed to delete notice from server.');
     }
   };
 

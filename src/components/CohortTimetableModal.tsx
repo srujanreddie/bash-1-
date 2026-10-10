@@ -34,12 +34,14 @@ interface CohortTimetableModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectCourse?: (code: string) => void;
+  initialTimetable?: TimetableConfig;
 }
 
 export const CohortTimetableModal: React.FC<CohortTimetableModalProps> = ({
   isOpen,
   onClose,
   onSelectCourse,
+  initialTimetable,
 }) => {
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const currentDayName = new Date().toLocaleDateString('en-US', { weekday: 'long' });
@@ -47,8 +49,15 @@ export const CohortTimetableModal: React.FC<CohortTimetableModalProps> = ({
     days.includes(currentDayName) ? currentDayName : 'Monday'
   );
   const [selectedSection, setSelectedSection] = useState<'B' | 'A'>('B');
-  const [timetableConfig, setTimetableConfig] = useState<TimetableConfig>(loadLocalTimetable());
+  const [timetableConfig, setTimetableConfig] = useState<TimetableConfig>(() => initialTimetable || loadLocalTimetable());
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  useEffect(() => {
+    if (initialTimetable) {
+      setTimetableConfig(initialTimetable);
+    }
+  }, [initialTimetable]);
 
   useEffect(() => {
     try {
@@ -62,11 +71,8 @@ export const CohortTimetableModal: React.FC<CohortTimetableModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    // Load local storage first for zero latency
-    const local = loadLocalTimetable();
-    setTimetableConfig(local);
-
-    // Fetch authoritative timetable from server
+    setIsSyncing(true);
+    // Fetch authoritative timetable from server so all viewers see exact admin schedule
     safeFetchJson<{ success: boolean; timetable: TimetableConfig }>('/api/timetable')
       .then((res) => {
         if (res.ok && res.data?.timetable) {
@@ -76,6 +82,9 @@ export const CohortTimetableModal: React.FC<CohortTimetableModalProps> = ({
       })
       .catch(() => {
         // use local
+      })
+      .finally(() => {
+        setIsSyncing(false);
       });
   }, [isOpen]);
 

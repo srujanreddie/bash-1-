@@ -1,0 +1,92 @@
+[
+  {
+    "id": "asg-pps-01",
+    "courseCode": "25ES1CS101",
+    "courseTitle": "Programming for Problem Solving (PPS)",
+    "title": "Lab Sheet 3: Dynamic Memory Allocation & Pointer Arithmetic in C",
+    "description": "Implement dynamic array resizing using malloc/realloc and calculate matrix transpose with double pointers. Test with edge cases and submit source code (.c) with terminal execution screenshots.",
+    "dueDate": "2026-10-12T12:55:16.832Z",
+    "submissionUrl": "https://classroom.google.com/u/0/c/cse-section-b-pps",
+    "priority": "urgent",
+    "maxPoints": 20,
+    "tags": [
+      "C Programming",
+      "Pointers",
+      "Lab Assignment"
+    ],
+    "createdAt": "2026-10-09T12:55:16.832Z",
+    "updatedAt": "2026-10-10T12:55:16.832Z"
+  },
+  {
+    "id": "asg-mac-01",
+    "courseCode": "25BS1MT101",
+    "courseTitle": "Matrices and Calculus (MAC)",
+    "title": "Problem Sheet 2: Cayley-Hamilton Theorem & Inverse Matrices",
+    "description": "Solve problems 1-12 from Unit 1 problem set. Find eigenvalues and eigenvectors for 3x3 matrices and verify characteristic equations step-by-step.",
+    "dueDate": "2026-10-14T12:55:16.832Z",
+    "submissionUrl": "https://classroom.google.com/u/0/c/cse-section-b-mac",
+    "priority": "high",
+    "maxPoints": 25,
+    "tags": [
+      "Matrices",
+      "Eigenvalues",
+      "Calculus"
+    ],
+    "createdAt": "2026-10-09T00:55:16.832Z",
+    "updatedAt": "2026-10-10T12:55:16.832Z"
+  },
+  {
+    "id": "asg-bee-01",
+    "courseCode": "25ES1EE101",
+    "courseTitle": "Basic Electrical Engineering (BEE)",
+    "title": "Assignment 2: Thevenin Theorem & AC Steady State Circuit Analysis",
+    "description": "Calculate equivalent Thevenin impedance and load voltage for network circuits illustrated in Lecture 8 notes. Handwritten PDF submission required.",
+    "dueDate": "2026-10-16T08:55:16.832Z",
+    "submissionUrl": "https://classroom.google.com/u/0/c/cse-section-b-bee",
+    "priority": "normal",
+    "maxPoints": 20,
+    "tags": [
+      "Circuits",
+      "Thevenin",
+      "AC Analysis"
+    ],
+    "createdAt": "2026-10-08T12:55:16.832Z",
+    "updatedAt": "2026-10-10T12:55:16.832Z"
+  },
+  {
+    "id": "asg-ed-01",
+    "courseCode": "25ES3ME101",
+    "courseTitle": "Engineering Drawing (ED)",
+    "title": "Drawing Sheet 4: Isometric Projections of Hexagonal Prisms & Pyramids",
+    "description": "Draw front and top views along with true isometric views on A2 drawing sheet with standard Section B title block. Room E-030 submission before 4:00 PM.",
+    "dueDate": "2026-10-18T00:55:16.832Z",
+    "submissionUrl": "",
+    "priority": "normal",
+    "maxPoints": 30,
+    "tags": [
+      "Isometric",
+      "A2 Sheet",
+      "Drawing"
+    ],
+    "createdAt": "2026-10-08T10:55:16.832Z",
+    "updatedAt": "2026-10-10T12:55:16.832Z"
+  },
+  {
+    "id": "asg-itw-01",
+    "courseCode": "25ES2IT101",
+    "courseTitle": "IT Workshop (ITW)",
+    "title": "Lab Project: Git Collaborative Branching & Markdown Documentation",
+    "description": "Create a GitHub repository, push 5 meaningful commits across two feature branches, resolve a simulated merge conflict, and submit repo URL with comprehensive README.md.",
+    "dueDate": "2026-10-20T12:55:16.832Z",
+    "submissionUrl": "https://classroom.google.com/u/0/c/cse-section-b-itw",
+    "priority": "normal",
+    "maxPoints": 20,
+    "tags": [
+      "Git",
+      "GitHub",
+      "Markdown"
+    ],
+    "createdAt": "2026-10-08T00:55:16.832Z",
+    "updatedAt": "2026-10-10T12:55:16.832Z"
+  }
+]
